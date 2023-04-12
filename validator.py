@@ -32,7 +32,7 @@ labelResult = Label(t, text="[                 ]")
 labelResult.place(x=60, y=210)
 
 def validate():
-    out = re.compile('^(?=.{12,}.$)(?=.*[A-Z].*)(?=.*[a-z].*)(?=.*[0-9].*)(?=.*[{}\\[\\]\\-+.,()].*)(?=.*[^\s].*)')
+    out = re.compile('^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{12,}$')
     if out.match(inputPass.get()):
         labelResult.config(fg = "green")
         labelResult["text"] = "Bien!"
