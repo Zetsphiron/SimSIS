@@ -25,24 +25,35 @@ labelPassConfirm.place(x=20, y=110)
 inputPassConfirm = Entry(t, show="•")
 inputPassConfirm.place(x=160, y=110)
 
+buttonCheck = Button(t, text="Comprobar contraseña", command=lambda : passCompare())
+buttonCheck.place(x=20, y=150)
+
 buttonConfirm = Button(t, text="Confirmar", command=lambda : validate())
 buttonConfirm.place(x=185, y=150)
 
-labelResult = Label(t, text="[                 ]")
+labelResult = Label(t, text="[ Resultados... ]")
 labelResult.place(x=60, y=210)
 
+def passCompare():
+    if (inputPass.get() != inputPassConfirm.get()):
+        buttonCheck.config(fg = "red")
+    else:
+        buttonCheck.config(fg = "green")
+
 def validate():
-    out = re.compile('^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{12,}$')
+    out = re.compile('^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*\W)(?!.*\s).{12,}$')
     if out.match(inputPass.get()):
         labelResult.config(fg = "green")
         labelResult["text"] = "Bien!"
     else:
         labelResult.config(fg = "red")
         labelResult["text"] = """Mal! Requisitos:
-        \nMínimo doce caracteres de longitud
-        \nAl menos una letra mayúscula. 
-        \nAl menos una letra minúscula. 
-        \nAl menos un carácter especial de los siguientes: {,}, [,], -, +,. , (, ) 
+        \nMínimo doce caracteres de longitud\
+        \nAl menos una letra mayúscula.\
+        \nAl menos una letra minúscula.\
+        \nAl menos un caracter especial de los siguientes:
+        \n` ~ ! @ # $ % ^ & * ( ) - = _ + [ ]\
+        \n{ } ; : ' " < > , . / | \ ?
         \nLa cadena no puede contener espacios en blanco."""
 
 
