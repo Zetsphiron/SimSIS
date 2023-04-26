@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador</title>
+    
+    <!-- Trabajo colaborativo de clase, no original -->
+    
+    <script>
+        
+        const ap1 = ['García', 'González', 'Rodríguez', 'Fernández', 'López', 'Martínez', 'Pérez', 'Sánchez', 'Gómez', 'Ruiz', 'Moreno', 'Jiménez', 'Hernández', 'Díaz', 'Torres', 'Álvarez', 'Ortiz', 'Sosa', 'Flores', 'Romero', 'Castro', 'Reyes', 'Espinosa', 'Vargas', 'Rivera', 'Vega', 'Ríos', 'Mendoza', 'Medina', 'Guerrero', 'Aguilar', 'Ramírez', 'Morales', 'Núñez', 'Castillo', 'León', 'Silva', 'Valencia', 'Cruz', 'Salazar', 'Montoya', 'Andrade', 'Chávez', 'Rojas', 'Miranda', 'Acosta', 'Bautista', 'Alvarado', 'Márquez', 'Contreras'];
+        
+        const ap2 = ["García", "Fernández", "Martínez", "González", "Rodríguez", "López", "Pérez", "Sánchez", "Romero", "Torres", "Alvarez", "Ruiz", "Ramírez", "Flores", "Santiago", "Vázquez", "Mendoza", "Hernández", "Díaz", "Moreno", "Jiménez", "Gómez", "Castillo", "Navarro", "Sosa", "Ortiz", "Silva", "Ramos", "Chávez", "Medina", "Iglesias", "Núñez", "Lara", "Rojas", "Cruz", "Salazar", "Morales", "Vega", "León", "Méndez", "Valencia", "Cortés", "Álvarez", "Mora", "Fuentes", "Castro", "Miranda"];
+        
+        const nombres = ['William', 'James', 'Oliver', 'Benjamin', 'Ethan', 'Lucas', 'Mason', 'Jacob', 'Noah', 'Elijah', 'Alexander', 'Daniel', 'Michael', 'Henry', 'Jackson', 'Sebastian', 'Caleb', 'Matthew', 'Samuel', 'David', 'Connor', 'Jack', 'Owen', 'Liam', 'Aiden', 'Nathan', 'Ryan', 'Adam', 'Anthony', 'Joseph', 'Joshua', 'Andrew', 'Nicholas', 'Robert', 'Charles', 'Christopher', 'Thomas', 'George', 'Isaac', 'Jonathan', 'Richard', 'Peter', 'Timothy', 'Edward', 'Patrick', 'Simon', 'Philip', 'Mark', 'Frank', 'Martin', 'Paul', 'Stephen', 'Donald', 'Albert', 'Harry', 'Eric', 'Victor', 'Walter', 'Clifford', 'Ralph', 'Gary', 'Kenneth', 'Roger', 'Raymond', 'Sidney', 'Frederick', 'Lawrence', 'Stanley', 'Gerald', 'Harold', 'Douglas', 'Leonard', 'Arnold', 'Norman', 'Maurice', 'Leslie'];
+        
+        var salida = `CREATE DATABASE IF NOT EXISTS sistema_escolar;\nUSE sistema_escolar;
+        CREATE TABLE IF NOT EXISTS alumnos (
+        expediente varchar(9) NOT NULL,
+        apellido_1 varchar(30) NOT NULL,
+        apellido_2 varchar(30) DEFAULT NULL,
+        nombre varchar(50) NOT NULL,
+        correo varchar(50) DEFAULT NULL,
+        UNIQUE KEY expediente (expediente));\n\n`;
+        function Generar() {
+            
+            salida += "INSERT INTO alumnos VALUES ";
+            var nombre1, ap11, i;
+            for ( i = 1; i < 35000; i++) {
+                
+                nombre1 = nombres[Math.floor(Math.random() * nombres.length)];
+                ap11 = ap1[Math.floor(Math.random() * ap1.length)];
+                
+                salida += `<br />('${("00000000" + i).slice(-9)}', '${ap11}', '${ap2[Math.floor(Math.random() * ap2.length)]}', '${nombre1}', '${nombre1.toLowerCase()}.${ap11.toLowerCase()}@unison.mx'),`;
+                
+            }
+            
+            // Último registro
+            nombre1 = nombres[Math.floor(Math.random() * nombres.length)];
+            ap11 = ap1[Math.floor(Math.random() * ap1.length)];
+            
+            salida += `<br />('${("00000000" + i).slice(-9)}', '${ap11}', '${ap2[Math.floor(Math.random() * ap2.length)]}', '${nombre1}', '${nombre1.toLowerCase()}.${ap11.toLowerCase()}@unison.mx');`;
+            
+            document.getElementById("registro").innerHTML=salida;
+            
+        }
+        
+        function guardarArchivo() {
+            
+            var a = document.createElement("a");
+            let texto = document.getElementById("registro").textContent;
+            salida = salida.replaceAll("<br />", "\n")
+            a.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(salida));
+            a.setAttribute("download", "alumnos.sql");
+            a.style.display = "none";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            
+        }
+        
+    </script>
+</head>
+
+<body>
+    <button onclick="Generar()">Generar Datos</button>
+    <button onclick="guardarArchivo()">Generar Archivo</button>
+    <p id="registro"></p>
+</body>
+
+</html>
