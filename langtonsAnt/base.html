@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hormiga de Langton</title>
+    <!-- Credit: Grzegorz Kossowski on https://www.youtube.com/watch?v=4sSzHG5lrh8 -->
+    
+    <style type="text/css">
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+        }
+        #gamecanvas {
+            border: 1px solid black;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            image-rendering: pixelated;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gamecanvas" width="600" height="600"></canvas>
+    
+    <script type="text/javascript">
+        var canvas = document.getElementById("gamecanvas");
+        var surface = canvas.getContext("2d");
+        surface.fillStyle = "rgba(0,0,0,1)";
+        
+        var AntClass = {
+            x: 0,
+            y: 0,
+            direction: 1,
+            
+            turnLeft: function() {
+                this.direction--;
+                if (this.direction < 1) this.direction = 4;
+                this.move(this.direction);
+            },
+            
+            turnRight: function() {
+                this.direction++;
+                if (this.direction > 4) this.direction = 1;
+                this.move(this.direction);
+            },
+            
+            move: function(dir) {
+                switch (dir) {
+                    case 1:
+                        ant.y--;
+                        break;
+                    
+                    case 2:
+                        ant.x++;
+                        break;
+                    
+                    case 3:
+                        ant.y++;
+                        break;
+                    
+                    case 4:
+                        ant.x--;
+                        break;
+                    
+                    default:
+                }
+            }
+        }
+        
+        var ant = Object.create(AntClass);
+        ant.x = Math.round(canvas.width/2);
+        ant.y = Math.round(canvas.height/2);
+        ant.direction = 1;
+        
+        window.addEventListener("load", goAnt, false);
+        
+        function goAnt() {
+            var color = surface.getImageData(ant.x, ant.y, 1, 1);
+            var red = color.data[0];
+            
+            if (red > 100) {
+                surface.fillStyle = "rgba(0,0,0,1)";
+                surface.fillRect(ant.x, ant.y, 1, 1);
+                ant.turnLeft();
+            } else {
+                surface.fillStyle = "rgba(255, 255, 255, 1)";
+                surface.fillRect(ant.x, ant.y, 1, 1);
+                ant.turnRight();
+            }
+            
+            // timer
+            window.setTimeout(goAnt, 1);
+            
+        }
+        
+    </script>
+    
+</body>
+</html>
