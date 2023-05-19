@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hormiga de Langton</title>
+    
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            background: #16161D; /* Eigengrau, el color que vemos cuando cerramos los ojos */
+        }
+        
+        #iterationLabel {
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        #gamecanvas {
+            border: 1px solid white;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-17%, -17%);
+            image-rendering: pixelated;
+            scale: 300%;
+        }
+    </style>
+    
+</head>
+
+
+<body>
+    
+    <h2 id="iterationLabel">> Iteración:</h2>
+    <div>
+        <canvas id="gamecanvas" width="320" height="240"></canvas>
+    </div>   
+    
+    <script>
+        
+        var canvas = document.getElementById("gamecanvas");
+        var surface = canvas.getContext("2d");
+        var iteration = 0;
+        
+        var allowRestarts = false; // Opción para romper la monotonía
+        var restartTurn = 16000;
+        
+        var AntClass = {
+            x: 0,           // PosX por defecto
+            y: 0,           // PosY por defecto
+            direction: 1,   // Orientación por defecto; 1 da una carretera hacia el suroeste
+            
+            turnLeft: function() {
+                this.direction--;
+                if (this.direction < 1) this.direction = 4;
+                this.move(this.direction);
+                document.getElementById('iterationLabel').innerHTML = "> Iteración: " + iteration++;
+            },
+            
+            turnRight: function() {
+                this.direction++;
+                if (this.direction > 4) this.direction = 1;
+                this.move(this.direction);
+                document.getElementById('iterationLabel').innerHTML = "> Iteración: " + iteration++;
+            },
+            
+            move: function(dir) {
+                
+                switch (dir) {
+                    case 1:
+                    this.y--;
+                    if (this.y <= 0) this.y = canvas.height - 1;
+                    break;
+                    
+                    case 2:
+                    this.x++;
+                    if (this.x >= canvas.width) this.x = 0;
+                    break;
+                    
+                    case 3:
+                    this.y++;
+                    if (this.y >= canvas.height) this.y = 0;
+                    break;
+                    
+                    case 4:
+                    this.x--;
+                    if (this.x <= 0) this.x = canvas.width - 1;
+                    break;
+                    
+                    default:
+                }
+                
+            },
+
+            overflow: function() {
+                
+            }
+            
+        }
+        
+        var ant = Object.create(AntClass);
+        // Posición y orientación de partida
+        ant.x = Math.round(canvas.width/2);
+        ant.y = Math.round(canvas.height/2);
+        ant.direction = 2; // 2 da una carretera hacia el noroeste
+        
+        window.addEventListener("load", goAnt, false);
+        
+        function goAnt() {
+            
+            if (allowRestarts) {
+                if (iteration % restartTurn == 0 && iteration != 0) {
+                    ant.x = Math.round(randomPos(0, canvas.width));
+                    ant.y = Math.round(randomPos(0, canvas.height));
+                    ant.direction = randomPos(1, 4);
+                }
+            }
+            
+            var color = surface.getImageData(ant.x, ant.y, 1, 1);
+            var red = color.data[0];
+            var green = color.data[1];
+            var blue = color.data[2];
+            
+            if (red == 255 && green == 255 && blue == 255) { // if white
+                surface.fillStyle = "rgba(0, 0, 0, 1)"; // turn to black
+                surface.fillRect(ant.x, ant.y, 1, 1);
+                ant.turnLeft();
+                console.log(ant.x + ", " + ant.y);
+            }
+            
+            if (red == 0 && green == 0 && blue == 0) { // if black
+                surface.fillStyle = "rgba(255, 255, 255, 1)"; // turn to white
+                surface.fillRect(ant.x, ant.y, 1, 1);
+                ant.turnRight();
+                console.log(ant.x + ", " + ant.y);
+            }
+            
+            /* if (red == 255 && green == 255 && blue == 255) {    // if white
+                surface.fillStyle = "rgba(0, 0, 0, 1)";         // turn to black
+                surface.fillRect(ant.x, ant.y, 1, 1);
+                ant.turnRight();                                // and go R
+                console.log(ant.x + ", " + ant.y);
+            }
+            if (red == 0 && green == 0 && blue == 0) {          // if black
+                surface.fillStyle = "rgba(0, 255, 0, 1)";       // turn to green
+                surface.fillRect(ant.x, ant.y, 1, 1);
+                ant.turnRight();                                // and go R
+                console.log(ant.x + ", " + ant.y);
+            }
+            if (red == 0 && green == 255 && blue == 0) {        // if green
+                surface.fillStyle = "rgba(0, 255, 255, 1)";     // turn to cyan
+                surface.fillRect(ant.x, ant.y, 1, 1);
+                ant.turnLeft();                                 // and go L
+                console.log(ant.x + ", " + ant.y);
+            }
+            if (red == 0 && green == 255 && blue == 255) {      // if cyan
+                surface.fillStyle = "rgba(255, 255, 255, 1)";   // turn to white
+                surface.fillRect(ant.x, ant.y, 1, 1);
+                ant.turnRight();                                // and go R
+                console.log(ant.x + ", " + ant.y);
+            } */
+            
+            // Delay en milisegundos
+            window.setTimeout(goAnt, 1);
+            
+        }
+        
+        function randomPos(min, max) { // Para elegir puntos aleatorios dentro del canvas
+            return Math.floor(Math.random() * (max - min + 1) + min)
+        }
+        
+    </script>
+    
+</body>
+</html>
